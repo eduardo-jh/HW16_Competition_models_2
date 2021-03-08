@@ -35,14 +35,16 @@ for i in range(1, len(t)):
     S[i] = S[i-1] + S[i-1] * (-alpha * I[i-1] + epsilon) * dt
 
 # Use symbolic functions to compute derivatives and Jacobian
-i, s = symbols('i s')  # Voles and owls symbols
+i, s = symbols('i s')  # infective and susceptible symbols
 variables = Matrix([i, s])
 
 # Create string representations of the functions f and g
 # f = '-0.005*i*s+0.05*s'
 # g = '0.005*i*s-0.02*i'
+# This updates the string equations, in case the parameters change
 f = '-' + str(alpha) + '*' + str(i) + '*' + str(s) + '+' + str(epsilon) + '*' + str(s)
-g = str(alpha) + '*' + str(i) + '*' + str(s) + '-' + str(gamma) + '*' + str(i) 
+g = str(alpha) + '*' + str(i) + '*' + str(s) + '-' + str(gamma) + '*' + str(i)
+print("Equations: f(v,o)=", f, ' and g(v,o)=', g)
 functions = Matrix([[f, g]])
 
 J = functions.jacobian(variables)  # Calculate Jacobian matrix
