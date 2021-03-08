@@ -11,7 +11,7 @@ Created on Fri Mar  5 00:15:20 2021
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from sympy import Symbol, Trace
+from sympy import symbols, Trace
 from sympy.matrices import Matrix
 
 dt = 0.1
@@ -35,12 +35,15 @@ for i in range(1, len(t)):
     O[i] = O[i-1] + O[i-1] * (epsilon * V[i-1] - delta) * dt
 
 # Use symbolic functions to compute derivatives and Jacobian
-x = Symbol('x')  # Voles
-y = Symbol('y')  # Owls
-variables = Matrix([x, y])
+v, o = symbols('v o')  # Voles and owls symbols
+variables = Matrix([v, o])
 # Create string representations of the functions f and g
-f = str(alpha) + '*' + str('x') + '-' + str(beta) + '*' + str(x) + '**2' + '-' + str(gamma) + '*' + str(x) + '*' + str(y)
-g = str(delta) + '*' + str(y) + '+' + str(epsilon) + '*' + str(x) + '*' + str(y)
+# f = '0.06*v-6e-06*v**2-0.001*v*o'
+# g = '0.02*o+0.0002*v*o'
+# This updates the string equations, in case the parameters change
+f = str(alpha) + '*' + str(v) + '-' + str(beta) + '*' + str(v) + '**2' + '-' + str(gamma) + '*' + str(v) + '*' + str(o)
+g = str(delta) + '*' + str(o) + '+' + str(epsilon) + '*' + str(v) + '*' + str(o)
+print("Equations: f(v,o)=", f, ' and g(v,o)=', g)
 functions = Matrix([[f, g]])
 
 J = functions.jacobian(variables)  # Calculate Jacobian matrix
@@ -48,7 +51,7 @@ J = functions.jacobian(variables)  # Calculate Jacobian matrix
 # Evaluate equilibrium points
 O_equil = alpha/gamma - beta/gamma*delta/epsilon
 V_equil = delta/epsilon
-J0 = J.subs([(x, V_equil), (y, O_equil)])
+J0 = J.subs([(v, V_equil), (o, O_equil)])
 # Calculate determinant and trace of the evaluated Jacobian matrix
 det = J0.det()
 trace = Trace(J0).simplify()
@@ -69,12 +72,12 @@ plt.plot(t, O, 'r-', label='O')
 plt.xlabel('Time')
 plt.ylabel('Population')
 plt.legend(loc='best')
-plt.savefig('q2_lotka_volterra_%dsteps_K=%d.png' % (steps, K), dpi=300, bbox_inches='tight')
+# plt.savefig('q2_lotka_volterra_%dsteps_K=%d.png' % (steps, K), dpi=300, bbox_inches='tight')
 plt.show()
 
 plt.figure(1)
 plt.plot(V, O)
 plt.xlabel('V')
 plt.ylabel('O')
-plt.savefig('q2_lotka_volterra_phase_%dsteps_K=%d.png' % (steps, K), dpi=300, bbox_inches='tight')
+# plt.savefig('q2_lotka_volterra_phase_%dsteps_K=%d.png' % (steps, K), dpi=300, bbox_inches='tight')
 plt.show()
